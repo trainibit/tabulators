@@ -23,9 +23,9 @@ import java.util.UUID;
 @Table(name = "polygon_vertices")
 public class PolygonVertex {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "polygon_vertices_id_gen")
-
-    @SequenceGenerator(name = "polygon_vertices_id_gen", sequenceName = "polygon_vertices_id_pv_seq", allocationSize = 1)
+    /*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "polygon_vertices_id_gen")
+    @SequenceGenerator(name = "polygon_vertices_id_gen", sequenceName = "polygon_vertices_id_pv_seq", allocationSize = 1)*/
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_pv", nullable = false)
     private Long id;
 

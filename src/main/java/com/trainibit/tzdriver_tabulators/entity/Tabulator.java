@@ -23,8 +23,9 @@ import java.util.UUID;
 @Table(name = "tabulator")
 public class Tabulator {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tabulator_id_gen")
-    @SequenceGenerator(name = "tabulator_id_gen", sequenceName = "tabulator_id_tab_seq", allocationSize = 1)
+    /*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tabulator_id_gen")
+    @SequenceGenerator(name = "tabulator_id_gen", sequenceName = "tabulator_id_tab_seq", allocationSize = 1)*/
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tab", nullable = false)
     private Long id;
 

@@ -25,8 +25,9 @@ import java.util.UUID;
 @Table(name = "geo_polygon")
 public class GeoPolygon {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "geo_polygon_id_gen")
-    @SequenceGenerator(name = "geo_polygon_id_gen", sequenceName = "geo_polygon_id_gp_seq", allocationSize = 1)
+    /*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "geo_polygon_id_gen")
+    @SequenceGenerator(name = "geo_polygon_id_gen", sequenceName = "geo_polygon_id_gp_seq", allocationSize = 1)*/
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_gp", nullable = false)
     private Long id;
 
