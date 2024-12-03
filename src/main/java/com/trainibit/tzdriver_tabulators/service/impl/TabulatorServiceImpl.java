@@ -1,4 +1,8 @@
 package com.trainibit.tzdriver_tabulators.service.impl;
 
-public class TabulatorServiceImpl {
+import com.trainibit.tzdriver_tabulators.service.TabulatorService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class TabulatorServiceImpl implements TabulatorService {
 }
