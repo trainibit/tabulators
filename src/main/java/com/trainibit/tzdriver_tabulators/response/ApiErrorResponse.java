@@ -1,10 +1,8 @@
 package com.trainibit.tzdriver_tabulators.response;
 
 import lombok.Data;
-
+@Data
 public class ApiErrorResponse {
-    @Data
-    public class ApiErrorResponse {
 
         private String message;
         private Integer status;
@@ -13,5 +11,5 @@ public class ApiErrorResponse {
             this.message = message;
             this.status = status;
         }
-    }
+
 }
