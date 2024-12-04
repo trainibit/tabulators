@@ -1,13 +1,6 @@
 package com.trainibit.tzdriver_tabulators.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -37,19 +30,17 @@ public class GeoPolygon {
     @Column(name = "zone_gp", nullable = false, length = Integer.MAX_VALUE)
     private String zoneGp;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "registred_gp", nullable = false)
+    @Column(name = "registred_gp", nullable = false, updatable = false, insertable = false)
     private Instant registredGp;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_gp", nullable = false)
+    @Column(name = "updated_gp", nullable = false, insertable = false)
     private Instant updatedGp;
 
     @ColumnDefault("true")
-    @Column(name = "active_gp", nullable = false)
-    private Boolean activeGp = false;
+    @Column(name = "active_gp", nullable = false, insertable = false)
+    private Boolean isActive;
 
-    @OneToMany(mappedBy = "geoPolygon")
-    private List<PolygonVertex> polygonVertices = new ArrayList<>();
+    @OneToMany(mappedBy = "geoPolygon", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PolygonVertex> polygonVertex = new ArrayList<>();
 
 }

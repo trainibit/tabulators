@@ -20,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "polygon_vertices")
+@Table(name = "polygon_vertex")
 public class PolygonVertex {
     @Id
     /*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "polygon_vertices_id_gen")
@@ -45,16 +45,13 @@ public class PolygonVertex {
     @Column(name = "length_pv", nullable = false)
     private Double lengthPv;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "registred_pv", nullable = false)
+    @Column(name = "registred_pv", nullable = false, insertable = false, updatable = false)
     private Instant registredPv;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_pv", nullable = false)
+    @Column(name = "updated_pv", nullable = false, insertable = false)
     private Instant updatedPv;
 
     @ColumnDefault("true")
-    @Column(name = "active_pv", nullable = false)
-    private Boolean activePv = false;
-
+    @Column(name = "active_pv", nullable = false, insertable = false)
+    private Boolean isActive;
 }
