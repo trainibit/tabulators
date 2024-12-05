@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/geoPolygon")
@@ -30,10 +31,8 @@ public class GeoPolygonController {
 
     @GetMapping
     public ResponseEntity<List<GeoPolygonResponse>> getAllActivePolygons() {
-        // Llamar al servicio para obtener los polígonos activos
-        List<GeoPolygonResponse> activePolygons = geoPolygonService.getAllActivePolygons();
 
-        // Retornar la respuesta
+        List<GeoPolygonResponse> activePolygons = geoPolygonService.getAllActivePolygons();
         return ResponseEntity.ok(activePolygons);
     }
 
@@ -43,6 +42,17 @@ public class GeoPolygonController {
     public ResponseEntity<GeoPolygonResponse> createGeoPolygon(@Valid @RequestBody GeoPolygonRequest requestGeoPolygon) {
         GeoPolygonResponse responseGeoPolygon = geoPolygonService.save(requestGeoPolygon);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseGeoPolygon);
+    }
+
+    /*----------- Update Method ------------*/
+
+    @PutMapping("/{uuid}")
+    public ResponseEntity<GeoPolygonResponse> updatePolygon(
+            @PathVariable UUID uuid,
+            @Valid @RequestBody GeoPolygonRequest requestGeoPolygon) {
+
+        GeoPolygonResponse updatedPolygon = geoPolygonService.updatePolygon(uuid, requestGeoPolygon);
+        return ResponseEntity.ok(updatedPolygon);
     }
 
 }

@@ -8,12 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "polygon_vertex")
-public class PolygonVertex {
+public class GeoPolygonVertex {
     @Id
     /*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "polygon_vertices_id_gen")
     @SequenceGenerator(name = "polygon_vertices_id_gen", sequenceName = "polygon_vertices_id_pv_seq", allocationSize = 1)*/
@@ -46,10 +46,10 @@ public class PolygonVertex {
     private Double lengthPv;
 
     @Column(name = "registred_pv", nullable = false, insertable = false, updatable = false)
-    private Instant registredPv;
+    private Timestamp registredPv;
 
     @Column(name = "updated_pv", nullable = false, insertable = false)
-    private Instant updatedPv;
+    private Timestamp updatedPv;
 
     @ColumnDefault("true")
     @Column(name = "active_pv", nullable = false, insertable = false)
