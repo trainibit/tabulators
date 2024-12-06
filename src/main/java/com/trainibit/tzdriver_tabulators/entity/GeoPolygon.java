@@ -38,7 +38,7 @@ public class GeoPolygon {
     @Column(name = "active_gp", nullable = false, insertable = false)
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "geoPolygon", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "geoPolygon", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GeoPolygonVertex> polygonVertex = new ArrayList<>();
 
 }

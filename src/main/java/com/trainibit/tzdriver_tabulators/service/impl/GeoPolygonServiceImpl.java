@@ -45,12 +45,13 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
 
     public GeoPolygonResponse save(GeoPolygonRequest requestGeoPolygon) {
 
-        if (requestGeoPolygon.getPolygonVertex().size() < 3) {
+        if (requestGeoPolygon.getPolygonVertex() == null || requestGeoPolygon.getPolygonVertex().size() < 3) {
             throw new IllegalArgumentException("El polígono debe tener al menos 3 vértices.");
         }
 
         GeoPolygon geoPolygon = GeoPolygonMapper.mapDtoToEntity(requestGeoPolygon);
         GeoPolygon savedGeoPolygon = geoPolygonRepository.save(geoPolygon);
+
         return GeoPolygonMapper.mapEntityToDto(savedGeoPolygon);
     }
 
@@ -92,7 +93,11 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
             existingPolygon.setZoneGp(requestGeoPolygon.getZoneGp());
         }
         existingPolygon.setUpdatedGp(Timestamp.from(Instant.now()));
-        GeoPolygon updatedPolygon = geoPolygonRepository.save(existingPolygon);
+
+        geoPolygonRepository.save(existingPolygon);
+        //GeoPolygon updatedPolygon = geoPolygonRepository.save(existingPolygon);
+        GeoPolygon updatedPolygon = geoPolygonRepository.findByUuidGp(uuidGp)
+                .orElseThrow(() -> new NoSuchElementException("Error al cargar el polígono actualizado con UUID: " + uuidGp));
         return GeoPolygonMapper.mapEntityToDto(updatedPolygon);
     }
 }
