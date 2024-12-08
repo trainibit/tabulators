@@ -1,11 +1,16 @@
 package com.trainibit.tzdriver_tabulators.controller;
 
 
+import com.trainibit.tzdriver_tabulators.entity.GeoPolygon;
+import com.trainibit.tzdriver_tabulators.entity.GeoPolygonVertex;
+import com.trainibit.tzdriver_tabulators.mapper.GeoPolygonMapper;
+import com.trainibit.tzdriver_tabulators.repository.GeoPolygonRepository;
 import com.trainibit.tzdriver_tabulators.request.GeoPolygonRequest;
 import com.trainibit.tzdriver_tabulators.response.GeoPolygonResponse;
 import com.trainibit.tzdriver_tabulators.service.GeoPolygonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,25 +20,29 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/geoPolygon")
+@RequestMapping("/api/geoPolygon")
 @Validated
 public class GeoPolygonController {
 
     @Autowired
     GeoPolygonService geoPolygonService;
-
-    @GetMapping("/")
-    public String home() {
-        return "Bienvenido a mi aplicación Spring Boot";
-    }
+    @Autowired
+    private GeoPolygonRepository geoPolygonRepository;
 
     // --------- FindAllActive Method --------
 
     @GetMapping
     public ResponseEntity<List<GeoPolygonResponse>> getAllActivePolygons() {
-
         List<GeoPolygonResponse> activePolygons = geoPolygonService.getAllActivePolygons();
         return ResponseEntity.ok(activePolygons);
+    }
+
+    /*----------- FindByUuid Method ------------*/
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<GeoPolygonResponse> findByUuid(@Valid @PathVariable UUID uuid) {
+        GeoPolygonResponse response = geoPolygonService.getPolygonByUuid(uuid);
+            return ResponseEntity.ok(response);
     }
 
     //---------- Save Method -------------
@@ -53,6 +62,14 @@ public class GeoPolygonController {
 
         GeoPolygonResponse updatedPolygon = geoPolygonService.updatePolygon(uuid, requestGeoPolygon);
         return ResponseEntity.ok(updatedPolygon);
+    }
+
+    /*----------- Delete Method ------------*/
+
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<String> deletePolygon(@PathVariable UUID uuid) {
+        String response = geoPolygonService.deletePolygonByUuid(uuid);
+        return ResponseEntity.ok(response);
     }
 
 }

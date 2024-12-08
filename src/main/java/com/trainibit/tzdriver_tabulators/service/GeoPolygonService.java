@@ -11,5 +11,9 @@ public interface GeoPolygonService {
 
     List<GeoPolygonResponse> getAllActivePolygons();
 
+    GeoPolygonResponse getPolygonByUuid(UUID id);
+
     GeoPolygonResponse updatePolygon(UUID uuidGp, GeoPolygonRequest requestGeoPolygon);
+
+    String deletePolygonByUuid(UUID uuid);
 }

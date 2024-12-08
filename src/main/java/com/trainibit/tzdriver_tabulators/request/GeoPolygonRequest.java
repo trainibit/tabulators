@@ -1,8 +1,7 @@
 package com.trainibit.tzdriver_tabulators.request;
 
-import com.trainibit.tzdriver_tabulators.entity.GeoPolygon;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.List;
 

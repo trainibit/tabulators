@@ -12,15 +12,16 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "polygon_vertex")
+@Where(clause = "active_pv = true")
 public class GeoPolygonVertex {
     @Id
     /*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "polygon_vertices_id_gen")
@@ -53,5 +54,5 @@ public class GeoPolygonVertex {
 
     @ColumnDefault("true")
     @Column(name = "active_pv", nullable = false, insertable = false)
-    private Boolean isActive;
+    private Boolean active;
 }

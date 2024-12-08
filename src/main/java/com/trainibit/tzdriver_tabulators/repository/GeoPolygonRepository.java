@@ -13,8 +13,8 @@ import java.util.UUID;
 @Repository
 public interface GeoPolygonRepository extends JpaRepository<GeoPolygon, Long> {
 
-    @Query("SELECT g FROM GeoPolygon g JOIN FETCH g.polygonVertex v WHERE g.isActive = true AND v.isActive = true")
-    List<GeoPolygon> findAllByIsActiveTrue();
+    List<GeoPolygon> findAllByActiveTrue();
 
     Optional<GeoPolygon> findByUuidGp(UUID uuidGp);
+
 }
