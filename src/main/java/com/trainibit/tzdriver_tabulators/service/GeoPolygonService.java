@@ -15,5 +15,5 @@ public interface GeoPolygonService {
 
     GeoPolygonResponse updatePolygon(UUID uuidGp, GeoPolygonRequest requestGeoPolygon);
 
-    String deletePolygonByUuid(UUID uuid);
+    GeoPolygonResponse deletePolygonByUuid(UUID uuid);
 }

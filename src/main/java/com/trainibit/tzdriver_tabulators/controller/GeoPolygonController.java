@@ -26,8 +26,6 @@ public class GeoPolygonController {
 
     @Autowired
     GeoPolygonService geoPolygonService;
-    @Autowired
-    private GeoPolygonRepository geoPolygonRepository;
 
     // --------- FindAllActive Method --------
 
@@ -67,8 +65,8 @@ public class GeoPolygonController {
     /*----------- Delete Method ------------*/
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<String> deletePolygon(@PathVariable UUID uuid) {
-        String response = geoPolygonService.deletePolygonByUuid(uuid);
+    public ResponseEntity<GeoPolygonResponse> deletePolygon(@PathVariable UUID uuid) {
+        GeoPolygonResponse response = geoPolygonService.deletePolygonByUuid(uuid);
         return ResponseEntity.ok(response);
     }
 

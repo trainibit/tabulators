@@ -2,7 +2,6 @@ package com.trainibit.tzdriver_tabulators.repository;
 
 import com.trainibit.tzdriver_tabulators.entity.GeoPolygon;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 
@@ -15,6 +14,7 @@ public interface GeoPolygonRepository extends JpaRepository<GeoPolygon, Long> {
 
     List<GeoPolygon> findAllByActiveTrue();
 
-    Optional<GeoPolygon> findByUuidGp(UUID uuidGp);
+    Optional<GeoPolygon> findByUuidGpAndActiveTrue(UUID uuidGp);
+
 
 }

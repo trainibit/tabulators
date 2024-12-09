@@ -22,7 +22,7 @@ public class GeoPolygon {
     @Column(name = "id_gp", nullable = false)
     private Long id;
 
-    @Column(name = "uuid_gp", nullable = false)
+    @Column(name = "uuid_gp", nullable = false, unique = true)
     private UUID uuidGp;
 
     @Column(name = "zone_gp", nullable = false, length = Integer.MAX_VALUE)

@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -29,7 +31,7 @@ public class Tabulator {
     @Column(name = "id_tab", nullable = false)
     private Long id;
 
-    @Column(name = "uuid_tab", nullable = false)
+    @Column(name = "uuid_tab", nullable = false, unique = true)
     private UUID uuidTab;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -43,16 +45,14 @@ public class Tabulator {
     @Column(name = "cost_tab", nullable = false)
     private Double costTab;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "registred_tab", nullable = false)
-    private Instant registredTab;
+    @Column(name = "registred_tab", nullable = false, insertable = false, updatable = false)
+    private Timestamp registredTab;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_tab", nullable = false)
-    private Instant updatedTab;
+    @Column(name = "updated_tab", nullable = false, insertable = false)
+    private Timestamp updatedTab;
 
     @ColumnDefault("true")
-    @Column(name = "active_tab", nullable = false)
-    private Boolean activeTab = false;
+    @Column(name = "active_tab", nullable = false, insertable = false)
+    private Boolean active;
 
 }

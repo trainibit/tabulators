@@ -30,7 +30,7 @@ public class GeoPolygonVertex {
     @Column(name = "id_pv", nullable = false)
     private Long id;
 
-    @Column(name = "uuid_pv", nullable = false)
+    @Column(name = "uuid_pv", nullable = false, unique = true)
     private UUID uuidPv;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

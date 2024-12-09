@@ -8,10 +8,10 @@ import com.trainibit.tzdriver_tabulators.repository.GeoPolygonVertexRepository;
 import com.trainibit.tzdriver_tabulators.request.GeoPolygonRequest;
 import com.trainibit.tzdriver_tabulators.request.PolygonVertexRequest;
 import com.trainibit.tzdriver_tabulators.response.GeoPolygonResponse;
+import com.trainibit.tzdriver_tabulators.response.PolygonVertexResponse;
 import com.trainibit.tzdriver_tabulators.service.GeoPolygonService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -44,10 +44,9 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
     /*------------- Geo Polygon By UUID ---------------*/
     @Override
     public GeoPolygonResponse getPolygonByUuid(UUID uuid) {
-        return geoPolygonRepository.findByUuidGp(uuid)
-                .filter(GeoPolygon::getActive) // Filtrar si el polígono está activo
-                .map(GeoPolygonMapper::mapEntityToDto) // Mapear a DTO
+        GeoPolygon geoPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Polígono con UUID " + uuid + " no encontrado."));
+         return GeoPolygonMapper.mapEntityToDto(geoPolygon);
     }
 
     /*------------- Geo Polygon Save ---------------*/
@@ -69,7 +68,7 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
     @Override
     @Transactional
     public GeoPolygonResponse updatePolygon(UUID uuidGp, GeoPolygonRequest requestGeoPolygon) {
-        GeoPolygon existingPolygon = geoPolygonRepository.findByUuidGp(uuidGp)
+        GeoPolygon existingPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(uuidGp)
                 .orElseThrow(() -> new NoSuchElementException("Polígono no encontrado."));
 
         if (requestGeoPolygon.getPolygonVertex() == null || requestGeoPolygon.getPolygonVertex().size() < 3) {
@@ -107,19 +106,19 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
     /*------------- Geo Polygon Delete ---------------*/
     @Override
     @Transactional
-    public String deletePolygonByUuid(UUID uuid) {
-        GeoPolygon existingPolygon = geoPolygonRepository.findByUuidGp(uuid)
+    public GeoPolygonResponse deletePolygonByUuid(UUID uuid) {
+        GeoPolygon existingPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Polígono con UUID "+ uuid +" no encontrado."));
 
         if (!existingPolygon.getActive()) {
-            throw new NoSuchElementException("Polígono con UUID "+ uuid +" no encontrado.");  // Lanza una excepción personalizada si no está activo
+            throw new NoSuchElementException("Polígono con UUID "+ uuid +" no encontrado.");
         }
 
 
-        for (GeoPolygonVertex vertex : existingPolygon.getPolygonVertex()) {
-            vertex.setUpdatedPv(Timestamp.from(Instant.now()));
+        existingPolygon.getPolygonVertex().forEach(vertex -> {
             vertex.setActive(false);
-        }
+            vertex.setUpdatedPv(Timestamp.from(Instant.now()));
+        });
 
         existingPolygon.setActive(false);
         existingPolygon.setUpdatedGp(Timestamp.from(Instant.now()));
@@ -128,7 +127,7 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
         geoPolygonRepository.save(existingPolygon);
         geoPolygonVertexRepository.saveAll(existingPolygon.getPolygonVertex());
 
-        return "El polígono con UUID " + uuid + " ha sido eliminado con éxito.";
+        return GeoPolygonMapper.mapEntityToDto(existingPolygon);
     }
 
 }
