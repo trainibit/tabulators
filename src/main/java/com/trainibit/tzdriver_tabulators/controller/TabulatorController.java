@@ -1,5 +1,6 @@
 package com.trainibit.tzdriver_tabulators.controller;
 
+import com.trainibit.tzdriver_tabulators.request.GeoPolygonRequest;
 import com.trainibit.tzdriver_tabulators.request.TabulatorRequest;
 import com.trainibit.tzdriver_tabulators.response.GeoPolygonResponse;
 import com.trainibit.tzdriver_tabulators.response.TabulatorResponse;
@@ -49,6 +50,21 @@ public class TabulatorController {
         TabulatorResponse response = tabulatorService.saveTabulator(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
+    }
+
+    /*----------- Update Method ------------*/
+
+    @PutMapping("/{uuid}")
+    public ResponseEntity<TabulatorResponse> updateTabulator(@PathVariable UUID uuid, @Valid @RequestBody TabulatorRequest requestTabulator) {
+        TabulatorResponse updatedTabulator = tabulatorService.updateTabulator(uuid, requestTabulator);
+        return ResponseEntity.ok(updatedTabulator);
+    }
+
+    /*----------- Update Method ------------*/
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<TabulatorResponse> deleteTabulator(@PathVariable UUID uuid) {
+        TabulatorResponse tabulatorResponse = tabulatorService.deleteTabulator(uuid);
+        return ResponseEntity.ok(tabulatorResponse);
     }
 
 

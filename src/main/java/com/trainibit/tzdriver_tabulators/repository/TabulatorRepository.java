@@ -13,6 +13,6 @@ import java.util.UUID;
 public interface TabulatorRepository extends JpaRepository<Tabulator, Long> {
     List<Tabulator> findAllByActiveTrue();
     Optional<Tabulator> findByUuidTabAndActiveTrue(UUID uuid);
-
+    boolean existsByOriginpolygonAndDestinationpolygonAndActiveTrueAndUuidTabNot(GeoPolygon originpolygon, GeoPolygon destinationpolygon, UUID uuidTab);
 
 }

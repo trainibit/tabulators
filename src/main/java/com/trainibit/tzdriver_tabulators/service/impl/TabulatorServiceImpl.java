@@ -49,7 +49,7 @@ public class TabulatorServiceImpl implements TabulatorService {
     @Override
     public TabulatorResponse getTabulatorByUuid(UUID uuidTab) {
         Tabulator tabulator = tabulatorRepository.findByUuidTabAndActiveTrue(uuidTab)
-                .orElseThrow(() -> new IllegalArgumentException("Tabulator not found with UUID: " + uuidTab));
+                .orElseThrow(() -> new IllegalArgumentException("Tabulador con UUID: " + uuidTab + " no encontrado."));
 
         return tabulatorMapper.mapEntityToDto(tabulator);
     }
@@ -59,12 +59,11 @@ public class TabulatorServiceImpl implements TabulatorService {
     @Override
     public TabulatorResponse saveTabulator(TabulatorRequest request) {
 
-
         GeoPolygon originPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(request.getOriginpolygonUuidGp())
-                .orElseThrow(() -> new IllegalArgumentException("Origin polygon not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Poligono de origen no encontrado."));
 
         GeoPolygon destinationPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(request.getDestinationpolygonUuidGp())
-                .orElseThrow(() -> new IllegalArgumentException("Destination polygon not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Poligono de destino no encontrado."));
 
         Tabulator tabulator = tabulatorMapper.mapDtoToEntity(request);
 
@@ -79,5 +78,46 @@ public class TabulatorServiceImpl implements TabulatorService {
     }
 
 
+    /*------------ Update Tabulator Method --------------*/
 
+    @Override
+    public TabulatorResponse updateTabulator(UUID uuid, TabulatorRequest requestTabulator) {
+        Tabulator existingTabulator = tabulatorRepository.findByUuidTabAndActiveTrue(uuid)
+                .orElseThrow(() -> new NoSuchElementException("Tabulador no encontrado con UUID: " + uuid));
+
+        GeoPolygon originPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(requestTabulator.getOriginpolygonUuidGp())
+                .orElseThrow(() -> new IllegalArgumentException("Polígono de origen no encontrado o inactivo."));
+
+        GeoPolygon destinationPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(requestTabulator.getDestinationpolygonUuidGp())
+                .orElseThrow(() -> new IllegalArgumentException("Polígono de destino no encontrado o inactivo."));
+
+        boolean duplicateExists = tabulatorRepository.existsByOriginpolygonAndDestinationpolygonAndActiveTrueAndUuidTabNot(originPolygon, destinationPolygon, uuid);
+        if (duplicateExists) {
+            throw new IllegalArgumentException("Ya existe un tabulador activo con el mismo origen y destino.");
+        }
+
+
+        existingTabulator.setOriginpolygon(originPolygon);
+        existingTabulator.setDestinationpolygon(destinationPolygon);
+        existingTabulator.setCostTab(requestTabulator.getCostTab());
+        existingTabulator.setUpdatedTab(Timestamp.from(Instant.now()));
+
+        Tabulator updatedTabulator = tabulatorRepository.save(existingTabulator);
+
+        return tabulatorMapper.mapEntityToDto(updatedTabulator);
+    }
+
+    /*------------ Delete Tabulator Method --------------*/
+
+    @Override
+
+    public TabulatorResponse deleteTabulator(UUID uuidTab) {
+        Tabulator existingTabulator = tabulatorRepository.findByUuidTabAndActiveTrue(uuidTab)
+                .orElseThrow(() -> new NoSuchElementException("Tabulador no encontrado con UUID: " + uuidTab));
+
+        existingTabulator.setActive(false);
+        existingTabulator.setUpdatedTab(Timestamp.from(Instant.now()));
+        tabulatorRepository.save(existingTabulator);
+        return tabulatorMapper.mapEntityToDto(existingTabulator);
+    }
 }

@@ -42,6 +42,7 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
     }
 
     /*------------- Geo Polygon By UUID ---------------*/
+
     @Override
     public GeoPolygonResponse getPolygonByUuid(UUID uuid) {
         GeoPolygon geoPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(uuid)
@@ -50,6 +51,7 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
     }
 
     /*------------- Geo Polygon Save ---------------*/
+
     @Override
     @Transactional
     public GeoPolygonResponse save(GeoPolygonRequest requestGeoPolygon) {
@@ -65,6 +67,7 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
     }
 
     /*------------- Geo Polygon Update ---------------*/
+
     @Override
     @Transactional
     public GeoPolygonResponse updatePolygon(UUID uuidGp, GeoPolygonRequest requestGeoPolygon) {
@@ -104,16 +107,12 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
     }
 
     /*------------- Geo Polygon Delete ---------------*/
+
     @Override
     @Transactional
     public GeoPolygonResponse deletePolygonByUuid(UUID uuid) {
         GeoPolygon existingPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(uuid)
                 .orElseThrow(() -> new NoSuchElementException("Polígono con UUID "+ uuid +" no encontrado."));
-
-        if (!existingPolygon.getActive()) {
-            throw new NoSuchElementException("Polígono con UUID "+ uuid +" no encontrado.");
-        }
-
 
         existingPolygon.getPolygonVertex().forEach(vertex -> {
             vertex.setActive(false);

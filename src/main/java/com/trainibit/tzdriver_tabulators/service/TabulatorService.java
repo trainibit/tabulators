@@ -15,4 +15,9 @@ public interface TabulatorService {
     List<TabulatorResponse> getAllActiveTabulators();
 
     TabulatorResponse getTabulatorByUuid(UUID uuidTab);
+
+    TabulatorResponse updateTabulator(UUID uuid, TabulatorRequest requestTabulator);
+
+    TabulatorResponse deleteTabulator(UUID uuid);
+
 }
