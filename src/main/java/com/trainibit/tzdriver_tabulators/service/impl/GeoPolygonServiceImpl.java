@@ -127,6 +127,7 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
         geoPolygonVertexRepository.saveAll(existingPolygon.getPolygonVertex());
 
         return GeoPolygonMapper.mapEntityToDto(existingPolygon);
+
     }
 
 }

@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface GeoPolygonVertexRepository extends JpaRepository<GeoPolygonVertex, Long> {
-    List<GeoPolygonVertex> findByGeoPolygonAndActiveTrue(GeoPolygon geoPolygon);
 
 }
