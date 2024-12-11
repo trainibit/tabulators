@@ -2,12 +2,10 @@ package com.trainibit.tzdriver_tabulators.service.impl;
 
 import com.trainibit.tzdriver_tabulators.entity.GeoPolygon;
 import com.trainibit.tzdriver_tabulators.entity.Tabulator;
-import com.trainibit.tzdriver_tabulators.mapper.GeoPolygonMapper;
 import com.trainibit.tzdriver_tabulators.mapper.TabulatorMapper;
 import com.trainibit.tzdriver_tabulators.repository.GeoPolygonRepository;
 import com.trainibit.tzdriver_tabulators.repository.TabulatorRepository;
 import com.trainibit.tzdriver_tabulators.request.TabulatorRequest;
-import com.trainibit.tzdriver_tabulators.response.GeoPolygonResponse;
 import com.trainibit.tzdriver_tabulators.response.TabulatorResponse;
 import com.trainibit.tzdriver_tabulators.service.TabulatorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +48,16 @@ public class TabulatorServiceImpl implements TabulatorService {
     public TabulatorResponse getTabulatorByUuid(UUID uuidTab) {
         Tabulator tabulator = tabulatorRepository.findByUuidTabAndActiveTrue(uuidTab)
                 .orElseThrow(() -> new IllegalArgumentException("Tabulador con UUID: " + uuidTab + " no encontrado."));
+
+        return tabulatorMapper.mapEntityToDto(tabulator);
+    }
+
+    /*------------ Search Tabulator For Origin & Destinetion --------------*/
+
+    @Override
+    public TabulatorResponse getTabulatorByPolygons(UUID originUuid, UUID destinationUuid) {
+        Tabulator tabulator = tabulatorRepository.findByOriginpolygon_UuidGpAndDestinationpolygon_UuidGpAndActiveTrue(originUuid, destinationUuid)
+                .orElseThrow(() -> new IllegalArgumentException("Tabulador no disponible para el origen y destino especificados."));
 
         return tabulatorMapper.mapEntityToDto(tabulator);
     }

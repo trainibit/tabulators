@@ -1,12 +1,9 @@
 package com.trainibit.tzdriver_tabulators.controller;
 
-import com.trainibit.tzdriver_tabulators.request.GeoPolygonRequest;
 import com.trainibit.tzdriver_tabulators.request.TabulatorRequest;
-import com.trainibit.tzdriver_tabulators.response.GeoPolygonResponse;
 import com.trainibit.tzdriver_tabulators.response.TabulatorResponse;
 import com.trainibit.tzdriver_tabulators.service.TabulatorService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +36,19 @@ public class TabulatorController {
     @GetMapping("/{uuidTab}")
     public ResponseEntity<TabulatorResponse> getTabulatorByUuid(@PathVariable UUID uuidTab) {
         TabulatorResponse tabulatorResponse = tabulatorService.getTabulatorByUuid(uuidTab);
+        return ResponseEntity.ok(tabulatorResponse);
+    }
+
+    /*------------ Search Tabulator By Origin & Destination Method -----------------*/
+
+    @GetMapping("/search")
+    public ResponseEntity<TabulatorResponse> getTabulatorByPolygons(
+            @RequestParam UUID originUuid,
+            @RequestParam UUID destinationUuid) {
+        // Llamar al servicio para obtener el Tabulator por los UUIDs de los polígonos
+        TabulatorResponse tabulatorResponse = tabulatorService.getTabulatorByPolygons(originUuid, destinationUuid);
+
+        // Retornar la respuesta con el código HTTP 200 OK
         return ResponseEntity.ok(tabulatorResponse);
     }
 

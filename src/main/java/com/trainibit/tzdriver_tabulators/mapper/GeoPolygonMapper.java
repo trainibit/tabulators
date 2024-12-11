@@ -7,9 +7,15 @@ import com.trainibit.tzdriver_tabulators.request.PolygonVertexRequest;
 import com.trainibit.tzdriver_tabulators.response.GeoPolygonResponse;
 import com.trainibit.tzdriver_tabulators.response.PolygonVertexResponse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class GeoPolygonMapper {
+
+    private GeoPolygonMapper() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static GeoPolygon mapDtoToEntity(GeoPolygonRequest request) {
         GeoPolygon geoPolygon = new GeoPolygon();

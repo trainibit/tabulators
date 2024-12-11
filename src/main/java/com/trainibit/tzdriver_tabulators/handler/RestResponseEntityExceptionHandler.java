@@ -30,11 +30,6 @@ public class RestResponseEntityExceptionHandler  extends ResponseEntityException
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
-    @ExceptionHandler(value = {BadRequestException.class})
-    protected ResponseEntity<Object> handleBadRequestException(RuntimeException ex, WebRequest request) {
-        ApiErrorResponse bodyOfResponse = new ApiErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }
     @ExceptionHandler(value = {IllegalArgumentException.class})
     protected ResponseEntity<Object> handleIllegalArgumentException(RuntimeException ex, WebRequest request) {
         ApiErrorResponse bodyOfResponse = new ApiErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());

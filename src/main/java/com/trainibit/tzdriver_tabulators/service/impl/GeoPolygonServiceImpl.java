@@ -2,13 +2,14 @@ package com.trainibit.tzdriver_tabulators.service.impl;
 
 import com.trainibit.tzdriver_tabulators.entity.GeoPolygon;
 import com.trainibit.tzdriver_tabulators.entity.GeoPolygonVertex;
+import com.trainibit.tzdriver_tabulators.entity.Tabulator;
 import com.trainibit.tzdriver_tabulators.mapper.GeoPolygonMapper;
 import com.trainibit.tzdriver_tabulators.repository.GeoPolygonRepository;
 import com.trainibit.tzdriver_tabulators.repository.GeoPolygonVertexRepository;
+import com.trainibit.tzdriver_tabulators.repository.TabulatorRepository;
 import com.trainibit.tzdriver_tabulators.request.GeoPolygonRequest;
 import com.trainibit.tzdriver_tabulators.request.PolygonVertexRequest;
 import com.trainibit.tzdriver_tabulators.response.GeoPolygonResponse;
-import com.trainibit.tzdriver_tabulators.response.PolygonVertexResponse;
 import com.trainibit.tzdriver_tabulators.service.GeoPolygonService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class GeoPolygonServiceImpl implements GeoPolygonService {
-    @Autowired
-    private GeoPolygonRepository geoPolygonRepository;
+
+
+
+    private final GeoPolygonRepository geoPolygonRepository;
+
+    private final GeoPolygonVertexRepository geoPolygonVertexRepository;
+
+    private final TabulatorRepository tabulatorRepository;
 
     @Autowired
-    private GeoPolygonVertexRepository geoPolygonVertexRepository;
+    public GeoPolygonServiceImpl(GeoPolygonRepository geoPolygonRepository, GeoPolygonVertexRepository geoPolygonVertexRepository, TabulatorRepository tabulatorRepository) {
+        this.geoPolygonRepository = geoPolygonRepository;
+        this.geoPolygonVertexRepository = geoPolygonVertexRepository;
+        this.tabulatorRepository = tabulatorRepository;
+    }
 
     /*----------- Geo Polyogns List --------------*/
 
@@ -38,7 +49,7 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
 
         return activePolygons.stream()
                 .map(GeoPolygonMapper::mapEntityToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /*------------- Geo Polygon By UUID ---------------*/
@@ -111,23 +122,46 @@ public class GeoPolygonServiceImpl implements GeoPolygonService {
     @Override
     @Transactional
     public GeoPolygonResponse deletePolygonByUuid(UUID uuid) {
-        GeoPolygon existingPolygon = geoPolygonRepository.findByUuidGpAndActiveTrue(uuid)
-                .orElseThrow(() -> new NoSuchElementException("Polígono con UUID "+ uuid +" no encontrado."));
+        GeoPolygon existingPolygon = findActivePolygon(uuid);
 
-        existingPolygon.getPolygonVertex().forEach(vertex -> {
-            vertex.setActive(false);
-            vertex.setUpdatedPv(Timestamp.from(Instant.now()));
-        });
+        deactivateVertices(existingPolygon);
 
-        existingPolygon.setActive(false);
-        existingPolygon.setUpdatedGp(Timestamp.from(Instant.now()));
+        deactivateRelatedTabulators(existingPolygon);
 
-
-        geoPolygonRepository.save(existingPolygon);
-        geoPolygonVertexRepository.saveAll(existingPolygon.getPolygonVertex());
+        deactivatePolygon(existingPolygon);
 
         return GeoPolygonMapper.mapEntityToDto(existingPolygon);
 
+    }
+
+    private GeoPolygon findActivePolygon(UUID uuid) {
+        return geoPolygonRepository.findByUuidGpAndActiveTrue(uuid)
+                .orElseThrow(() -> new NoSuchElementException("Polígono con UUID " + uuid + " no encontrado."));
+    }
+
+    private void deactivateVertices(GeoPolygon polygon) {
+        polygon.getPolygonVertex().forEach(vertex -> {
+            vertex.setActive(false);
+            vertex.setUpdatedPv(Timestamp.from(Instant.now()));
+        });
+        geoPolygonVertexRepository.saveAll(polygon.getPolygonVertex());
+    }
+
+    private void deactivateRelatedTabulators(GeoPolygon polygon) {
+        List<Tabulator> relatedTabulators = tabulatorRepository.findByOriginOrDestination(polygon);
+        if (!relatedTabulators.isEmpty()) {
+            relatedTabulators.forEach(tabulator -> {
+                tabulator.setActive(false);
+                tabulator.setUpdatedTab(Timestamp.from(Instant.now()));
+            });
+            tabulatorRepository.saveAll(relatedTabulators);
+        }
+    }
+
+    private void deactivatePolygon(GeoPolygon polygon) {
+        polygon.setActive(false);
+        polygon.setUpdatedGp(Timestamp.from(Instant.now()));
+        geoPolygonRepository.save(polygon);
     }
 
 }

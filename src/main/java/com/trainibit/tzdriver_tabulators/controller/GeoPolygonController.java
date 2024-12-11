@@ -1,16 +1,11 @@
 package com.trainibit.tzdriver_tabulators.controller;
 
 
-import com.trainibit.tzdriver_tabulators.entity.GeoPolygon;
-import com.trainibit.tzdriver_tabulators.entity.GeoPolygonVertex;
-import com.trainibit.tzdriver_tabulators.mapper.GeoPolygonMapper;
-import com.trainibit.tzdriver_tabulators.repository.GeoPolygonRepository;
 import com.trainibit.tzdriver_tabulators.request.GeoPolygonRequest;
 import com.trainibit.tzdriver_tabulators.response.GeoPolygonResponse;
 import com.trainibit.tzdriver_tabulators.service.GeoPolygonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,8 +19,12 @@ import java.util.UUID;
 @Validated
 public class GeoPolygonController {
 
+    private final GeoPolygonService geoPolygonService;
     @Autowired
-    GeoPolygonService geoPolygonService;
+    public GeoPolygonController(GeoPolygonService geoPolygonService) {
+        this.geoPolygonService = geoPolygonService;
+    }
+
 
     // --------- FindAllActive Method --------
 
