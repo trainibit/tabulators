@@ -1,5 +1,6 @@
 package com.trainibit.tzdriver_tabulators.controller;
 
+import com.trainibit.tzdriver_tabulators.response.DeterminatePolygonAndTabulatorResponse;
 import com.trainibit.tzdriver_tabulators.response.PointInPolygonResponse;
 import com.trainibit.tzdriver_tabulators.service.PointInPolygonService;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,17 @@ public class PointInPolygonController {
             @RequestParam double longitude) {
 
         PointInPolygonResponse response = pointInPolygonService.isPointInsidePolygon(latitude, longitude);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/findOriginAndDestinationTabulator")
+    public ResponseEntity<DeterminatePolygonAndTabulatorResponse> isOriginAndDestinationInsidePolygon(
+            @RequestParam double latitudeOrigin,
+            @RequestParam double longitudeOrigin,
+            @RequestParam double latitudeDestination,
+            @RequestParam double longitudeDestination) {
+
+        DeterminatePolygonAndTabulatorResponse response = pointInPolygonService.isOriginAndDestinationInsidePolygon(latitudeOrigin, longitudeOrigin, latitudeDestination, longitudeDestination);
         return ResponseEntity.ok(response);
     }
 

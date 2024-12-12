@@ -2,7 +2,10 @@ package com.trainibit.tzdriver_tabulators.service.impl;
 
 import com.trainibit.tzdriver_tabulators.entity.GeoPolygon;
 import com.trainibit.tzdriver_tabulators.entity.GeoPolygonVertex;
+import com.trainibit.tzdriver_tabulators.entity.Tabulator;
 import com.trainibit.tzdriver_tabulators.repository.GeoPolygonRepository;
+import com.trainibit.tzdriver_tabulators.repository.TabulatorRepository;
+import com.trainibit.tzdriver_tabulators.response.DeterminatePolygonAndTabulatorResponse;
 import com.trainibit.tzdriver_tabulators.response.PointInPolygonResponse;
 import com.trainibit.tzdriver_tabulators.service.PointInPolygonService;
 import com.trainibit.tzdriver_tabulators.utils.PointInPolygonHelper;
@@ -14,28 +17,50 @@ import java.util.List;
 @Service
 public class PointInPolygonServiceImpl implements PointInPolygonService {
 
+    private final GeoPolygonRepository geoPolygonRepository;
     @Autowired
-    private GeoPolygonRepository geoPolygonRepository;
+    public PointInPolygonServiceImpl(GeoPolygonRepository geoPolygonRepository) {
+        this.geoPolygonRepository = geoPolygonRepository;
+    }
+
+    @Autowired
+    private TabulatorRepository tabulatorRepository;
 
     @Override
     public PointInPolygonResponse isPointInsidePolygon(double pointLat, double pointLon) {
+        GeoPolygon polygon = determinePointInsidePolygon(pointLat, pointLon);
+        return new PointInPolygonResponse(polygon.getUuidGp(), polygon.getZoneGp());
+    }
+
+    @Override
+    public DeterminatePolygonAndTabulatorResponse isOriginAndDestinationInsidePolygon(double latOrigin, double longOrigin, double latDestination, double longDestination) {
+        GeoPolygon originPolygon = determinePointInsidePolygon(latOrigin, longOrigin);
+        GeoPolygon destinationPolygon = determinePointInsidePolygon(latDestination, longDestination);
+
+        Tabulator tabulator = tabulatorRepository.findByOriginpolygon_UuidGpAndDestinationpolygon_UuidGpAndActiveTrue(
+                        originPolygon.getUuidGp(), destinationPolygon.getUuidGp())
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró un tabulador entre los polígonos especificados."));
+
+        return new DeterminatePolygonAndTabulatorResponse(
+                originPolygon.getUuidGp(),
+                originPolygon.getZoneGp(),
+                destinationPolygon.getUuidGp(),
+                destinationPolygon.getZoneGp(),
+                tabulator.getCostTab()
+        );
+    }
+
+
+    private GeoPolygon determinePointInsidePolygon(double latitude, double longitude) {
         List<GeoPolygon> polygons = geoPolygonRepository.findAllByActiveTrue();
 
-        // Iterar sobre todos los polígonos activos
-        for (GeoPolygon polygon : polygons) {
-            List<GeoPolygonVertex> vertices = polygon.getPolygonVertex();
-
-            // Verificar si el punto está dentro del polígono actual
-            boolean isInside = PointInPolygonHelper.isPointInsidePolygon(pointLat, pointLon, vertices);
-
-            if (isInside) {
-                // Si el punto está dentro, devolver el UUID y nombre de la zona
-                return new PointInPolygonResponse(polygon.getUuidGp(), polygon.getZoneGp());
-            }
-        }
-
-        // Si no se encuentra ningún polígono, lanzar excepción
-        throw new IllegalArgumentException("El punto especificado no está dentro de un polígono registrado.");
+        return polygons.stream()
+                .filter(polygon -> PointInPolygonHelper.isPointInsidePolygon(latitude, longitude, polygon.getPolygonVertex()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("El punto especificado no está dentro de un polígono registrado."));
     }
+
+
+
 }
 
