@@ -3,7 +3,6 @@ package com.trainibit.tzdriver_tabulators.handler;
 
 import com.trainibit.tzdriver_tabulators.response.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Hidden;
-import org.apache.coyote.BadRequestException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

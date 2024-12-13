@@ -1,7 +1,6 @@
 package com.trainibit.tzdriver_tabulators.service.impl;
 
 import com.trainibit.tzdriver_tabulators.entity.GeoPolygon;
-import com.trainibit.tzdriver_tabulators.entity.GeoPolygonVertex;
 import com.trainibit.tzdriver_tabulators.entity.Tabulator;
 import com.trainibit.tzdriver_tabulators.repository.GeoPolygonRepository;
 import com.trainibit.tzdriver_tabulators.repository.TabulatorRepository;
@@ -59,8 +58,6 @@ public class PointInPolygonServiceImpl implements PointInPolygonService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("El punto especificado no está dentro de un polígono registrado."));
     }
-
-
 
 }
 
